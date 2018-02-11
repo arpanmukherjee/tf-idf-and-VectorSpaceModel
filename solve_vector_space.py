@@ -122,7 +122,7 @@ while True:
         result_set.append(key)
         cnt += 1
 
-    if len(result_set) == 0:
+    if len(result_set) == 0 or result[result_set[0]] == 0.0:
         ans = ans + "Sorry, no documents found!\n"
     else:
         ans = ans + "Following documents were retrieved for the given query:\n"

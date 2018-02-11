@@ -33,7 +33,7 @@ def pre_process():
             print("Error")
         for w in tokens:
             try:
-                clean_words.append(ps.stem(w))
+                clean_words.append(ps.stem(w).decode("utf-8"))
             except:
                 print w
     return clean_words
@@ -50,7 +50,7 @@ for id in range(len(file_list)):
     line = ""
     for i in range(len(temp)-1):
         line += (temp[i]+" ")
-    line += temp[i]
+    line += temp[len(temp)-1]
     file_list[id] = line
 
 header = pre_process()
@@ -61,7 +61,11 @@ for key in global_dict:
     for id in range(doc_len):
         tid = str(id).decode("utf-8")
         if tid in global_dict[key].keys():
-            templist[id] = (1+math.log10(global_dict[key][tid]))*math.log10(float(doc_len)/float(len(global_dict[key])))
+            if global_dict[key] in header:
+                templist[id] = (1 + math.log10(global_dict[key][tid]+100)) * math.log10(
+                    float(doc_len) / float(len(global_dict[key])))
+            else:
+                templist[id] = (1+math.log10(global_dict[key][tid]))*math.log10(float(doc_len)/float(len(global_dict[key])))
     tf_idf[key] = templist
 with open('tf_idf.json', 'w') as fp:
     json.dump(tf_idf, fp)

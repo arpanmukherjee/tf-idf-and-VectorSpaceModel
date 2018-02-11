@@ -19,6 +19,8 @@ dgtostr = inflect.engine()
 def getPosting(query):
     postingList = {}
     for word in query:
+        if word not in tf_idf:
+            continue
         temp_list = []
         for id in range(doc_len):
             if tf_idf[word][id] > 0.0:
@@ -77,13 +79,19 @@ while True:
         query.append(ps.stem(w))
     d = getPosting(query)
     int_id = set([i for i in range(467)])
+    flag = False
     for word in d:
+        if len(d[word]) > 0:
+            flag = True
         int_id = int_id & set(d[word])
-
+    if flag == False:
+        int_id.clear()
     result = {}
     for id in int_id:
         temp = 0
         for word in query:
+            if word not in tf_idf:
+                continue
             temp += tf_idf[word][id]
         result[id] = temp
 
