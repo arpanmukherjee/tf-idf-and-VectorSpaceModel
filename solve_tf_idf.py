@@ -95,7 +95,7 @@ while True:
             temp += tf_idf[word][id]
         result[id] = temp
 
-    print(len(result))
+    # print(len(result))
     cnt = 0
     result_set = []
     for key, value in reversed(sorted(result.iteritems(), key=lambda (k, v): (v, k))):

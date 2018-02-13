@@ -17,7 +17,8 @@ def has_digit(input_string):
 
 
 def pre_process():
-    clean_words = []
+    clean_words = {}
+    id = 0
     for sentence in file_list:
         try:
             temp_tokens = [i for i in nltk.word_tokenize(sentence.lower().encode('utf-8').strip()) if i not in stop_words]
@@ -33,9 +34,13 @@ def pre_process():
             print("Error")
         for w in tokens:
             try:
-                clean_words.append(ps.stem(w).decode("utf-8"))
+                t_word = ps.stem(w).decode("utf-8")
+                if t_word not in clean_words.keys():
+                    clean_words[t_word] = []
+                clean_words[t_word].append(id)
             except:
                 print w
+        id += 1
     return clean_words
 
 
@@ -61,11 +66,12 @@ for key in global_dict:
     for id in range(doc_len):
         tid = str(id).decode("utf-8")
         if tid in global_dict[key].keys():
-            if global_dict[key] in header:
-                templist[id] = (1 + math.log10(global_dict[key][tid]+100)) * math.log10(
+            if key in header.keys() and id in header[key]:
+                templist[id] = (1 + math.log10(global_dict[key][tid]+75)) * math.log10(
                     float(doc_len) / float(len(global_dict[key])))
             else:
-                templist[id] = (1+math.log10(global_dict[key][tid]))*math.log10(float(doc_len)/float(len(global_dict[key])))
+                templist[id] = (1+math.log10(global_dict[key][tid]))*math.log10(float(doc_len)
+                                                                                / float(len(global_dict[key])))
     tf_idf[key] = templist
 with open('tf_idf.json', 'w') as fp:
     json.dump(tf_idf, fp)
